@@ -182,15 +182,13 @@ public class Calculator {
         String result2 = "0";
         int j = num2.length() - 1;
         int counter = 0;
-        // int factor = 1;
         int remainder = 0;
 
         while (j >= 0) {
             int x = Data.HEXA_DIGITS.indexOf(num2.charAt(j));
             int i = num1.length() - 1;
-            System.out.println("j: " + j);
             while (i >= 0) {
-                int y = Data.HEXA_DIGITS.indexOf(num2.charAt(i));
+                int y = Data.HEXA_DIGITS.indexOf(num1.charAt(i));
 
                 int product = (x * y + remainder) % 16;
                 remainder = (x * y + remainder) / 16;
@@ -202,9 +200,7 @@ public class Calculator {
             if (remainder != 0) {
                 result = Data.DIGITS[remainder] + result;
             }
-            System.out.println("result: " + result);
             result2 = addHexa(result, result2);
-            System.out.println("result2: " + result2);
             result = "";
             result = pad(result, counter);
             j--;
