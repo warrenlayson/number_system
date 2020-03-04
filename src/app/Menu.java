@@ -149,13 +149,13 @@ public class Menu {
                 break;
             case SUBTRACTION:
                 String sign = num1 < num2 ? "-" : "";
-                result = sign + Calculator.subtract(num1, num2, base) + "";
+                result = sign + Calculator.subtract(num1, num2, base);
                 break;
             case MULTIPLICATION:
                 result = Calculator.multiply(num1, num2, base) + "";
                 break;
             case DIVISION:
-                result = Calculator.divide(num1, num2, base) + "";
+                // result = Calculator.divide(num1, num2, base) + "";
                 break;
             default:
                 break;
@@ -191,6 +191,15 @@ public class Menu {
         switch (choice) {
             case 1:
                 conversionsMenu(NumberSystems.BINARY);
+                break;
+            case 2:
+                conversionsMenu(NumberSystems.OCTAL);
+                break;
+            case 3:
+                conversionsMenu(NumberSystems.NONARY);
+                break;
+            case 4:
+                conversionsMenu(NumberSystems.HEXADECIMAL);
                 break;
             default:
                 break;
@@ -244,8 +253,8 @@ public class Menu {
             case HEXADECIMAL:
                 System.out.println("CONVERSION OF " + numberSystems + " TO " + conversions + "\n");
                 System.out.print("Enter hexadecimal number: ");
-                num = scan.nextInt();
-                result = convert(conversions, num, 16);
+                String hexa = scan.next().toUpperCase();
+                result = convertHexa(conversions, hexa, 16);
                 System.out.println("Result: " + result);
                 break;
             case NONARY:
@@ -274,16 +283,40 @@ public class Menu {
                 result = Conversion.toDec(num, base) + "";
                 break;
             case OCTAL:
-                result = Conversion.toOctal(Conversion.toDec(num, base));
+                result = Conversion.toBase(Conversion.toDec(num, base), base);
                 break;
             case BINARY:
-                result = Conversion.toBin(Conversion.toDec(num, base));
+                result = Conversion.toBase(Conversion.toDec(num, base), base);
                 break;
             case HEXADECIMAL:
-                result = Conversion.toHexa(Conversion.toDec(num, base));
+                result = Conversion.toBase(Conversion.toDec(num, base), base);
                 break;
             case NONARY:
-                result = Conversion.toNona(Conversion.toDec(num, base));
+                result = Conversion.toBase(Conversion.toDec(num, base), base);
+                break;
+            default:
+                break;
+        }
+        return result;
+    }
+
+    String convertHexa(Conversions conversions, String hexa, int base) {
+        String result = "";
+        switch (conversions) {
+            case DECIMAL:
+                result = Conversion.hexaToDec(hexa) + "";
+                break;
+            case OCTAL:
+                result = Conversion.toBase(Conversion.hexaToDec(hexa), 8);
+                break;
+            case BINARY:
+                result = Conversion.toBase(Conversion.hexaToDec(hexa), 2);
+                break;
+            case HEXADECIMAL:
+                result = Conversion.toHexa(Conversion.hexaToDec(hexa));
+                break;
+            case NONARY:
+                result = Conversion.toBase(Conversion.hexaToDec(hexa), 9);
                 break;
             default:
                 break;
