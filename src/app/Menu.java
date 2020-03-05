@@ -9,15 +9,11 @@ public class Menu {
     Scanner scan;
 
     private enum NumberSystems {
-        BINARY, NONARY, OCTAL, HEXADECIMAL
+        BINARY, NONARY, OCTAL, DECIMAL, HEXADECIMAL
     };
 
     private enum Operations {
         ADDITION, SUBTRACTION, MULTIPLICATION, DIVISION,
-    }
-
-    private enum Conversions {
-        DECIMAL, BINARY, OCTAL, NONARY, HEXADECIMAL,
     }
 
     Menu(Scanner scan) {
@@ -186,26 +182,26 @@ public class Menu {
         }
     }
 
-    void conversionsMenu(NumberSystems numberSystems) {
+    void conversionsMenu(NumberSystems numberSystem) {
         System.out.print(
                 "\tCONVERSIONS\n1. TO DECIMAL\n2. TO OCTAL\n3. TO BINARY\n4. TO HEXA\n5. TO NONARY\n6. MAIN MENU\n7. EXIT\nENTER YOUR CHOICE: ");
         int choice = scan.nextInt();
 
         switch (choice) {
             case 1:
-                convertScreen(numberSystems, Conversions.DECIMAL);
+                convertScreen(numberSystem, NumberSystems.DECIMAL);
                 break;
             case 2:
-                convertScreen(numberSystems, Conversions.OCTAL);
+                convertScreen(numberSystem, NumberSystems.OCTAL);
                 break;
             case 3:
-                convertScreen(numberSystems, Conversions.BINARY);
+                convertScreen(numberSystem, NumberSystems.BINARY);
                 break;
             case 4:
-                convertScreen(numberSystems, Conversions.HEXADECIMAL);
+                convertScreen(numberSystem, NumberSystems.HEXADECIMAL);
                 break;
             case 5:
-                convertScreen(numberSystems, Conversions.NONARY);
+                convertScreen(numberSystem, NumberSystems.NONARY);
                 break;
             case 6:
                 mainMenu();
@@ -219,36 +215,36 @@ public class Menu {
 
     }
 
-    void convertScreen(NumberSystems numberSystems, Conversions conversions) {
+    void convertScreen(NumberSystems numberSystem, NumberSystems conversion) {
         String num;
         String result;
-        switch (numberSystems) {
+        switch (numberSystem) {
             case BINARY:
-                System.out.println("CONVERSION OF " + numberSystems + " TO " + conversions + "\n");
+                System.out.println("CONVERSION OF " + numberSystem + " TO " + conversion + "\n");
                 System.out.print("Enter binary number: ");
                 num = scan.next();
-                result = convert(conversions, num, 2);
+                result = convert(conversion, num, 2);
                 System.out.println("Result: " + result);
                 break;
             case NONARY:
-                System.out.println("CONVERSION OF " + numberSystems + " TO " + conversions + "\n");
+                System.out.println("CONVERSION OF " + numberSystem + " TO " + conversion + "\n");
                 System.out.print("Enter nonary number: ");
                 num = scan.next();
-                result = convert(conversions, num, 9);
+                result = convert(conversion, num, 9);
                 System.out.println("Result: " + result);
                 break;
             case OCTAL:
-                System.out.println("CONVERSION OF " + numberSystems + " TO " + conversions + "\n");
+                System.out.println("CONVERSION OF " + numberSystem + " TO " + conversion + "\n");
                 System.out.print("Enter octal number: ");
                 num = scan.next();
-                result = convert(conversions, num, 8);
+                result = convert(conversion, num, 8);
                 System.out.println("Result: " + result);
                 break;
             case HEXADECIMAL:
-                System.out.println("CONVERSION OF " + numberSystems + " TO " + conversions + "\n");
+                System.out.println("CONVERSION OF " + numberSystem + " TO " + conversion + "\n");
                 System.out.print("Enter hexadecimal number: ");
                 String hexa = scan.next().toUpperCase();
-                result = convert(conversions, hexa, 16);
+                result = convert(conversion, hexa, 16);
                 System.out.println("Result: " + result);
                 break;
             default:
@@ -256,9 +252,9 @@ public class Menu {
         }
     }
 
-    String convert(Conversions conversions, String num, int base) {
+    String convert(NumberSystems numberSystem, String num, int base) {
         String result = "";
-        switch (conversions) {
+        switch (numberSystem) {
             case DECIMAL:
                 result = Conversion.toDec(num, base) + "";
                 break;
