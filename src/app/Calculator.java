@@ -6,71 +6,136 @@ package app;
 public class Calculator {
 
     /**
-     * Add BINARY, OCTAL, AND NONARY provided by the base, BINARY - 2, OCTAL - 8,
-     * NONARY - 9
+     * Add BINARY, OCTAL, NONARY, AND HEXA provided by the base, BINARY - 2, OCTAL -
+     * 8, NONARY - 9, HEXA - 16
      * 
-     * @param num1
-     * @param num2
+     * @param n1
+     * @param n2
      * @param base
      * @return result
      */
-    static int add(int num1, int num2, int base) {
-        int[] sum = new int[20];
-        int remainder = 0, result = 0, i = 0;
+    static String add(String n1, String n2, int base) {
 
-        while (num1 != 0 || num2 != 0) {
-            sum[i++] = (num1 % 10 + num2 % 10 + remainder) % base;
-            remainder = (num1 % 10 + num2 % 10 + remainder) / base;
-            num1 /= 10;
-            num2 /= 10;
-        }
-        if (remainder != 0) {
-            sum[i++] = remainder;
+        String result = "";
+        int i = n1.length() - 1, j = n2.length() - 1, sum, rem = 0, x, y;
+
+        while (i >= 0 && j >= 0) {
+            x = Data.DIGITS.indexOf(n1.charAt(i));
+            y = Data.DIGITS.indexOf(n2.charAt(j));
+
+            sum = (x + y + rem) % base;
+            rem = (x + y + rem) / base;
+            result = Data.DIGITS.charAt(sum) + result;
             i--;
+            j--;
         }
         while (i >= 0) {
-            result = result * 10 + sum[i--];
+            x = Data.DIGITS.indexOf(n1.charAt(i));
+            sum = (x + rem) % base;
+            rem = (x + rem) / base;
+            result = Data.DIGITS.charAt(sum) + result;
+            i--;
+
         }
+        while (j >= 0) {
+            x = Data.DIGITS.indexOf(n2.charAt(j));
+            sum = (x + rem) % base;
+            rem = (x + rem) / base;
+            result = Data.DIGITS.charAt(sum) + result;
+            j--;
+
+        }
+        if (rem != 0) {
+            result = Data.DIGITS.charAt(rem) + result;
+        }
+
         return result;
     }
 
     /**
-     * Subtract BINARY, OCTAL, AND NONARY provided by the base, BINARY - 2, OCTAL -
-     * 8, AND NONARY - 9,
+     * Subtract BINARY, OCTAL, NONARY, AND HEXA provided by the base, BINARY - 2,
+     * OCTAL - 8, NONARY - 9,AND HEXA - 16
      * 
-     * @param num1
-     * @param num2
+     * @param n1
+     * @param n2
      * @param base
      * @return result
      */
-    static int subtract(int num1, int num2, int base) {
-        int[] difference = new int[20];
-        int carry = 0, result = 0, i = 0;
-        // Swaps the values of num1 and num2 if num1 is less than num2
-        if (num1 < num2) {
-            int z = num1;
-            num1 = num2;
-            num2 = z;
-        }
-        while (num1 != 0 || num2 != 0) {
-            int x = num1 % 10 - carry;
-            int y = num2 % 10;
-            if (x < y) {
-                x += base;
-                carry = 1;
-            } else {
-                carry = 0;
+    static String subtract(String n1, String n2, int base) {
+        String result = "", radix = "1";
+        int carry = 0, diff;
+
+        // Check if num1 < num2, if so use r's
+        boolean isNegative = Integer.parseInt(n1, base) < Integer.parseInt(n2, base);
+
+        if (isNegative) {
+            // Generate radix 0's
+            for (int i = n2.length() - 1; i >= 0; i--) {
+                radix += 0;
+            }
+            // Subtract radix to n2
+            int j = radix.length() - 1;
+            int k = n2.length() - 1;
+            while (k >= 0) {
+                int x = Data.DIGITS.indexOf(radix.charAt(j)) - carry;
+                int y = Data.DIGITS.indexOf(n2.charAt(k));
+
+                if (x < y) {
+                    x += base;
+                    carry = 1;
+                } else {
+                    carry = 0;
+                }
+                diff = x - y;
+                result = Data.DIGITS.charAt(diff) + result;
+                k--;
+                j--;
             }
 
-            difference[i++] = x - y;
-            num1 /= 10;
-            num2 /= 10;
+            System.out.println(result);
+
+            // Add the 16's complement to n1
+            result = add(result, n1, base);
+
+            // Check for overflow and remove
+            if (result.length() != n2.length()) {
+                result = result.substring(1);
+            }
+
+        } else {
+            int j = n1.length() - 1;
+            int k = n2.length() - 1;
+            while (j >= 0 && k >= 0) {
+                int x = Data.DIGITS.indexOf(n1.charAt(j)) - carry;
+                int y = Data.DIGITS.indexOf(n2.charAt(k));
+
+                if (x < y) {
+                    x += base;
+                    carry = 1;
+                } else {
+                    carry = 0;
+                }
+                diff = x - y;
+                result = Data.DIGITS.charAt(diff) + result;
+                k--;
+                j--;
+            }
+            while (j >= 0) {
+                int x = Data.DIGITS.indexOf(n1.charAt(j)) - carry;
+                result = Data.DIGITS.charAt(x) + result;
+                j--;
+            }
         }
 
-        while (i >= 0) {
-            result = result * 10 + difference[i--];
-        }
+        result = removeLeadingZeroes(result);
 
+        return result;
+    }
+
+    private static String removeLeadingZeroes(String result) {
+        while (result.indexOf("0") == 0) {
+            result = result.substring(1);
+        }
         return result;
     }
 
@@ -78,157 +143,63 @@ public class Calculator {
      * Multiply BINARY, OCTAL, AND NONARY provided by the base, BINARY - 2, OCTAL -
      * 8, AND NONARY - 9,
      * 
-     * @param num1
-     * @param num2
+     * @param n1
+     * @param n2
      * @param base
      * @return result
      */
-    static int multiply(int num1, int num2, int base) {
-        int result = 0, factor = 1;
-        while (num2 != 0) {
-            // for binary
-            if (base == 2) {
-                int x = num2 % 10;
-                if (x == 1) {
-                    num1 *= factor;
-                    result = add(num1, result, base);
-                } else {
-                    num1 *= factor;
-                }
-                factor = 10;
+    static String multiply(String n1, String n2, int base) {
+        String result = "", temp = "";
+        int rem = 0, ctr = 0, x, y, i, product;
 
-                num2 /= 10;
-                // for octal
-            } else if (base == 8) {
-                result = add(num1, result, base);
-                num2 -= 1;
-                // for nonary
-            } else if (base == 9) {
-                result = add(num1, result, base);
-                num2 -= 1;
+        for (int j = n2.length() - 1; j >= 0; j--) {
+            y = Data.DIGITS.indexOf(n2.charAt(j));
+            i = n1.length() - 1;
+            for (; i >= 0; i--) {
+                x = Data.DIGITS.indexOf(n1.charAt(i));
+                product = (x * y + rem) % base;
+                rem = (x * y + rem) / base;
+                temp = Data.DIGITS.charAt(product) + temp;
+                i--;
             }
+            if (rem != 0) {
+                temp = Data.DIGITS.charAt(rem) + temp;
+                rem = 0;
+            }
+            result = add(result, temp, base);
+            temp = "";
+            for (int k = ctr; k >= 0; k--) {
+                temp += 0;
+            }
+            ctr++;
         }
         return result;
     }
 
     /**
-     * Divide BINARY, OCTAL, AND NONARY
+     * Divide BINARY, OCTAL, NONARY, and HEXA by base BINARY - 2, OCTAL - 8, NONARY
+     * - 9, HEXA - 16
      * 
-     * @param num1
-     * @param num2
+     * @param n1
+     * @param n2
+     * @param base
      * @return result
      */
-    // static String divide(int num1, int num2, int base) {
+    static String divide(String n1, String n2, int base) {
+        int quotient;
+        double remainder, decimalPoint, temp;
+        String wholeNumber, rem = "";
 
-    // }
+        quotient = Conversion.toDec(n1, base) / Conversion.toDec(n2, base);
+        remainder = (double) Conversion.toDec(n1, base) / Conversion.toDec(n2, base);
+        decimalPoint = remainder - quotient;
+        wholeNumber = Conversion.toBase(quotient, base);
 
-    static String addHexa(String num1, String num2) {
-        String result = "";
-        int i = num1.length() - 1, j = num2.length() - 1, remainder = 0, sum;
-
-        while (i >= 0 && j >= 0) {
-            int x = Data.HEXA_DIGITS.indexOf(num1.charAt(i));
-            int y = Data.HEXA_DIGITS.indexOf(num2.charAt(j));
-            sum = (x + y + remainder) % 16;
-            remainder = (x + y + remainder) / 16;
-            result = Data.DIGITS[sum] + result;
-            i--;
-            j--;
+        while (decimalPoint != 0) {
+            temp = decimalPoint * 16;
+            decimalPoint = temp - temp;
+            rem = Data.DIGITS.charAt((int) decimalPoint) + rem;
         }
-        if (i > j) {
-            while (i >= 0) {
-                int x = Data.HEXA_DIGITS.indexOf(num1.charAt(i));
-                sum = (x + remainder) % 16;
-                remainder = (x + remainder) / 16;
-                result = Data.DIGITS[sum] + result;
-
-                i--;
-            }
-        } else {
-            while (j >= 0) {
-                int y = Data.HEXA_DIGITS.indexOf(num2.charAt(j));
-                sum = (y + remainder) % 16;
-                remainder = (y + remainder) / 16;
-                result = Data.DIGITS[sum] + result;
-
-                j--;
-            }
-        }
-        if (remainder != 0) {
-            result = Data.DIGITS[remainder] + result;
-        }
-
-        return result;
-    }
-
-    static String subtractHexa(String hexa1, String hexa2, int base) {
-        String result = "", sign = (hexa1.length() < hexa2.length()
-                || Data.HEXA_DIGITS.indexOf(hexa1.charAt(0)) < Data.HEXA_DIGITS.indexOf(hexa2.charAt(0))) ? "-" : "";
-        int i, j, carry = 0, difference;
-        if (hexa1.length() < hexa2.length()) {
-            String tmp = hexa1;
-            hexa1 = hexa2;
-            hexa2 = tmp;
-            i = hexa1.length() - 1;
-            j = hexa2.length() - 1;
-        } else {
-            i = hexa1.length() - 1;
-            j = hexa2.length() - 1;
-        }
-        while (i >= 0 && j >= 0) {
-            int x = Data.HEXA_DIGITS.indexOf(hexa1.charAt(i)) - carry;
-            int y = Data.HEXA_DIGITS.indexOf(hexa2.charAt(j));
-            x += (x < y && i != j) ? base : 0;
-            carry = (x < y && i != j) ? 1 : 0;
-            difference = x - y;
-            result = Data.DIGITS[Math.abs(difference)] + result;
-            i--;
-            j--;
-        }
-        while (i >= 0) {
-            int x = Data.HEXA_DIGITS.indexOf(hexa1.charAt(i)) - carry;
-            result = Data.DIGITS[x] + result;
-            i--;
-        }
-        return sign + result;
-    }
-
-    static String multiplyHexa(String num1, String num2) {
-        String temp = "", result = "0";
-        int j = num2.length() - 1, counter = 0, remainder = 0;
-
-        while (j >= 0) {
-            int x = Data.HEXA_DIGITS.indexOf(num2.charAt(j));
-            int i = num1.length() - 1;
-            while (i >= 0) {
-                int y = Data.HEXA_DIGITS.indexOf(num1.charAt(i));
-                int product = (x * y + remainder) % 16;
-                remainder = (x * y + remainder) / 16;
-                temp = Data.DIGITS[product] + temp;
-                i--;
-            }
-            if (remainder != 0) {
-                temp = Data.DIGITS[remainder] + temp;
-            }
-            result = addHexa(result, temp);
-            temp = "";
-            temp = pad(temp, counter);
-            j--;
-            counter++;
-        }
-
-        return result;
-    }
-
-    static String pad(String x, int counter) {
-        for (int i = counter; i >= 0; i--) {
-            x = "0" + x;
-        }
-
-        return x;
-    }
-
-    static String divideHexa(String hexa1, String hexa2) {
-        return "";
+        return wholeNumber + "." + rem;
     }
 }

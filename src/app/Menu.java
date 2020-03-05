@@ -96,44 +96,44 @@ public class Menu {
     }
 
     void operation(NumberSystems numberSystem, Operations operations) {
-        int num1;
-        int num2;
+        String n1;
+        String n2;
         String result;
         switch (numberSystem) {
             case BINARY:
                 System.out.println(operations + " OF " + numberSystem);
                 System.out.print("\nFirst Binary Number: ");
-                num1 = scan.nextInt();
+                n1 = scan.next();
                 System.out.print("Second Binary Number: ");
-                num2 = scan.nextInt();
-                result = operate(operations, 2, num1, num2);
+                n2 = scan.next();
+                result = operate(operations, n1, n2, 2);
                 System.out.println("Result: " + result);
                 break;
             case OCTAL:
                 System.out.println(operations + " OF " + numberSystem);
                 System.out.print("\nFirst Octal Number: ");
-                num1 = scan.nextInt();
+                n1 = scan.next();
                 System.out.print("Second Octal Number: ");
-                num2 = scan.nextInt();
-                result = operate(operations, 8, num1, num2);
+                n2 = scan.next();
+                result = operate(operations, n1, n2, 8);
                 System.out.println("Result: " + result);
                 break;
             case NONARY:
                 System.out.println(operations + " OF " + numberSystem);
                 System.out.print("\nFirst Nonary Number: ");
-                num1 = scan.nextInt();
+                n1 = scan.next();
                 System.out.print("Second Nonary Number: ");
-                num2 = scan.nextInt();
-                result = operate(operations, 9, num1, num2);
+                n2 = scan.next();
+                result = operate(operations, n1, n2, 9);
                 System.out.println("Result: " + result);
                 break;
             case HEXADECIMAL:
                 System.out.println(operations + " OF " + numberSystem);
                 System.out.print("\nFirst Hexadecimal Number: ");
-                String hexa1 = scan.next().toUpperCase();
+                n1 = scan.next().toUpperCase();
                 System.out.print("Second Hexadecimal Number: ");
-                String hexa2 = scan.next().toUpperCase();
-                result = operateHexa(operations, 16, hexa1, hexa2);
+                n2 = scan.next().toUpperCase();
+                result = operate(operations, n1, n2, 16);
                 System.out.println("Result: " + result);
                 break;
             default:
@@ -141,40 +141,20 @@ public class Menu {
         }
     }
 
-    String operate(Operations operations, int base, int num1, int num2) {
+    String operate(Operations operations, String num1, String num2, int base) {
         String result = "";
         switch (operations) {
             case ADDITION:
-                result = Calculator.add(num1, num2, base) + "";
+                result = Calculator.add(num1, num2, base);
                 break;
             case SUBTRACTION:
-                String sign = num1 < num2 ? "-" : "";
-                result = sign + Calculator.subtract(num1, num2, base);
+                result = Calculator.subtract(num1, num2, base);
                 break;
             case MULTIPLICATION:
-                result = Calculator.multiply(num1, num2, base) + "";
+                result = Calculator.multiply(num1, num2, base);
                 break;
             case DIVISION:
-                // result = Calculator.divide(num1, num2, base) + "";
-                break;
-            default:
-                break;
-        }
-
-        return result;
-    }
-
-    String operateHexa(Operations operations, int base, String num1, String num2) {
-        String result = "";
-        switch (operations) {
-            case ADDITION:
-                result = Calculator.addHexa(num1, num2);
-                break;
-            case SUBTRACTION:
-                result = Calculator.subtractHexa(num1, num2, base);
-                break;
-            case MULTIPLICATION:
-                result = Calculator.multiplyHexa(num1, num2);
+                result = Calculator.divide(num1, num2, base);
                 break;
             default:
                 break;
@@ -240,35 +220,35 @@ public class Menu {
     }
 
     void convertScreen(NumberSystems numberSystems, Conversions conversions) {
-        int num;
+        String num;
         String result;
         switch (numberSystems) {
             case BINARY:
                 System.out.println("CONVERSION OF " + numberSystems + " TO " + conversions + "\n");
                 System.out.print("Enter binary number: ");
-                num = scan.nextInt();
+                num = scan.next();
                 result = convert(conversions, num, 2);
-                System.out.println("Result: " + result);
-                break;
-            case HEXADECIMAL:
-                System.out.println("CONVERSION OF " + numberSystems + " TO " + conversions + "\n");
-                System.out.print("Enter hexadecimal number: ");
-                String hexa = scan.next().toUpperCase();
-                result = convertHexa(conversions, hexa, 16);
                 System.out.println("Result: " + result);
                 break;
             case NONARY:
                 System.out.println("CONVERSION OF " + numberSystems + " TO " + conversions + "\n");
                 System.out.print("Enter nonary number: ");
-                num = scan.nextInt();
+                num = scan.next();
                 result = convert(conversions, num, 9);
                 System.out.println("Result: " + result);
                 break;
             case OCTAL:
                 System.out.println("CONVERSION OF " + numberSystems + " TO " + conversions + "\n");
                 System.out.print("Enter octal number: ");
-                num = scan.nextInt();
-                result = convert(conversions, num, 2);
+                num = scan.next();
+                result = convert(conversions, num, 8);
+                System.out.println("Result: " + result);
+                break;
+            case HEXADECIMAL:
+                System.out.println("CONVERSION OF " + numberSystems + " TO " + conversions + "\n");
+                System.out.print("Enter hexadecimal number: ");
+                String hexa = scan.next().toUpperCase();
+                result = convert(conversions, hexa, 16);
                 System.out.println("Result: " + result);
                 break;
             default:
@@ -276,7 +256,7 @@ public class Menu {
         }
     }
 
-    String convert(Conversions conversions, int num, int base) {
+    String convert(Conversions conversions, String num, int base) {
         String result = "";
         switch (conversions) {
             case DECIMAL:
@@ -293,30 +273,6 @@ public class Menu {
                 break;
             case NONARY:
                 result = Conversion.toBase(Conversion.toDec(num, base), base);
-                break;
-            default:
-                break;
-        }
-        return result;
-    }
-
-    String convertHexa(Conversions conversions, String hexa, int base) {
-        String result = "";
-        switch (conversions) {
-            case DECIMAL:
-                result = Conversion.hexaToDec(hexa) + "";
-                break;
-            case OCTAL:
-                result = Conversion.toBase(Conversion.hexaToDec(hexa), 8);
-                break;
-            case BINARY:
-                result = Conversion.toBase(Conversion.hexaToDec(hexa), 2);
-                break;
-            case HEXADECIMAL:
-                result = Conversion.toHexa(Conversion.hexaToDec(hexa));
-                break;
-            case NONARY:
-                result = Conversion.toBase(Conversion.hexaToDec(hexa), 9);
                 break;
             default:
                 break;
